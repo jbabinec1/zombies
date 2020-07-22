@@ -1,0 +1,30 @@
+{
+"frames": {
+	"bush_1.png": {
+		"frame": {"x":54, "y":66, "w":26, "h":30},
+		"spriteSourceSize": {"x":2,"y":2,"w":32,"h":32},
+		"sourceSize": {"w":32,"h":32}
+	},
+	"dirt.png": {
+		"frame": {"x":54, "y":33, "w":32, "h":32},
+		"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+		"sourceSize": {"w":32,"h":32}
+	},
+	"grass.png": {
+		"frame": {"x":54, "y":0, "w":32, "h":32},
+		"spriteSourceSize": {"x":0,"y":0,"w":32,"h":32},
+		"sourceSize": {"w":32,"h":32}
+	},
+	"tree_3.png": {
+		"frame": {"x":0, "y":0, "w":53, "h":87},
+		"spriteSourceSize": {"x":2,"y":40,"w":64,"h":128},
+		"sourceSize": {"w":64,"h":128}
+	}
+
+},
+"meta": {
+	"image": "enchanted_characterJr.png",
+	"size": {"w": 87, "h": 97},
+	"scale": "1"
+}
+}

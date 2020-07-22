@@ -1,7 +1,10 @@
 class Player extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, key) {
-        super(scene, x, y, key);
+    constructor(scene, x, y, key, reticle) {
+        super(scene, x, y, key, reticle);
         this.scene = scene; 
+
+        this.reticle = reticle;
+        
 
         this.scene.physics.world.enable(this);
         
@@ -17,6 +20,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
        
 
         this.cursorKeys = this.scene.input.keyboard.addKeys('W,S,A,D');
+
+     
+  
          
 
     }
@@ -27,6 +33,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     update(player, A, D, W, S) {
 
+   
         
     // Rotates player to face towards reticle
     //player.rotation = Phaser.Math.Angle.Between(player.x, player.y, reticle.x, reticle.y);
@@ -39,21 +46,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
 
     if(this.cursorKeys.A.isDown){
-        player.setVelocityX(-200);
+        player.setVelocityX(-100);
         //this.player.flipX = true;
         
         
       }else if(this.cursorKeys.D.isDown){
-        player.setVelocityX(200);
+        player.setVelocityX(100);
         //this.player.flipX = false;
       }
      
       if(this.cursorKeys.W.isDown){
-        player.setVelocityY(-200);
+        player.setVelocityY(-100);
         player.flipY = true;
         
       }else if(this.cursorKeys.S.isDown) {
-        player.setVelocityY(200);
+        player.setVelocityY(100);
         
       }
 
