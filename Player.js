@@ -22,6 +22,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.cursorKeys = this.scene.input.keyboard.addKeys('W,S,A,D');
 
      
+        
   
          
 
@@ -73,7 +74,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
       } //End update area
        
        
-       
+      pickUpPistol(pistol, player) {
+        //pistol.destroy();
+        //pistol.setVisible(false);
+        player.setTexture('armed_pistol_player');
+        //this.player.setScale(2);
+    }
          
        
        
