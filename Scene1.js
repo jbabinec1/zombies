@@ -1,8 +1,12 @@
+
+
 class Scene1 extends Phaser.Scene {
     constructor() {
       super("playGame");
+      var bullet;
     }
-  
+
+
     create() {
 
         
@@ -23,8 +27,6 @@ class Scene1 extends Phaser.Scene {
 
     
 
-      
-    //this.player = this.physics.add.sprite(32.3799, 291.419, 'player_sprite', 'player2.png');
     this.player = new Player(this, 32.3799, 291.419, 'player_sprite', 'player2.png').setScale(1.5);
     this.reticle = this.physics.add.sprite(32.3799, 320.00, 'reticle', 'reticle.png');
 
@@ -33,10 +35,14 @@ class Scene1 extends Phaser.Scene {
     //this.pistol = this.physics.add.sprite(300, 300, 'pistol', 'pistol.png');
     this.pistol = this.physics.add.sprite(300, 300, 'player_sprite', 'pistol.png');
 
+    this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
+   
 
     this.trees.setCollisionBetween(1, 4.5);
     this.physics.add.collider(this.player, this.trees);
 
+
+    this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
     // When player walks over sword, overlap and trigger pickUpSword function
     this.physics.add.overlap(this.player, this.pistol, this.pickUpPistol, null, this);
@@ -54,6 +60,8 @@ class Scene1 extends Phaser.Scene {
     });
 
 
+
+
         // Move reticle upon locked pointer move
         this.input.on('pointermove', function (pointer) {
             if (this.input.mouse.locked)
@@ -62,21 +70,44 @@ class Scene1 extends Phaser.Scene {
                 this.reticle.y += pointer.movementY;
             }
         }, this);
+
+
+
+        // Fires bullet from player on left click of mouse
+        this.input.on('pointerdown', function (pointer, time, lastFired) {
+            if (this.player.active === false)
+                return;
+    
+            // Get bullet from bullets group
+            var bullet = this.playerBullets.get().setActive(true).setVisible(true);
+            
+            if (bullet && this.player.texture.key === 'armed_pistol_player')
+            {
+                bullet.fire(this.player, this.reticle);
+                //this.physics.add.collider(enemy, bullet, enemyHitCallback);
+            }
+        }, this);
     
     
       
-
+    
+    this.projectiles = this.add.group();
 
     //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.cursorKeys = this.input.keyboard.addKeys('W,S,A,D');
 
 
+
+     //Camera
+     //this.cameras.main.zoom = 1.5;
+
      // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
-    this.cameras.main.startFollow(this.player);
+    this.cameraDolly = new Phaser.Geom.Point(this.player.x, this.player.y);
+    this.cameras.main.startFollow(this.cameraDolly);
 
-
+   
 
 
 
@@ -90,8 +121,8 @@ class Scene1 extends Phaser.Scene {
 
     this.player.update(this.player);  //this.W, this.S, this.A, this.D, 
 
-    //this.moveZombie(this.zombie, .4);
-
+    this.cameraDolly.x = Math.floor(this.player.x);
+    this.cameraDolly.y = Math.floor(this.player.y);
     
      // Makes reticle move with player
      this.reticle.body.velocity.x = this.player.body.velocity.x;
@@ -130,6 +161,33 @@ class Scene1 extends Phaser.Scene {
     }
 
 
+/*
+    if (Phaser.Input.Keyboard.JustDown(this.spacebar)) {
+        if(this.player.active){
+
+      //this.bullet.rotation = this.player.rotation;
+        this.shootBullet();
+
+        this.bullet.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y); 
+        
+
+        }
+      }  */
+
+
+
+
+   
+
+/*
+    this.input.on('pointerup', function (pointer) {
+
+      
+        let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.reticle.x, this.reticle.y);            
+
+        this.shootBullet(angle);
+    }, this);  */
+
 
 
    
@@ -138,13 +196,22 @@ class Scene1 extends Phaser.Scene {
 
 
 
+   shootBullet(angle) {
+  
+    var bullet = new Bullet(this);
+
+    bullet.rotation = angle;
+
+    
+   }
+
 
 
 
    pickUpPistol(pistol, player) {
        this.pistol.destroy();
        //pistol.setVisible(false);
-       this.player.setTexture('player_sprite','armed_player_pistol.png').setScale(1.5);
+       this.player.setTexture('armed_pistol_player').setScale(1.5);
        //this.player.setScale(2);
    }
 
@@ -159,7 +226,7 @@ class Scene1 extends Phaser.Scene {
 
 
 
- 
+  
 
 
 

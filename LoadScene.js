@@ -18,6 +18,9 @@ class LoadScene extends Phaser.Scene {
 
         this.load.image('reticle', 'assets/reticle.png', {frameWidth: 2, frameHeight: 2});
 
+        //this.load.spritesheet("bullet", "assets/bullet.png", { frameWidth: 3, frameHeight: 3  }); 
+
+        this.load.image('bullet', 'assets/bullet.png', {frameWidth: 2, frameHeight: 2});
 
      
         this.load.image("woodsMap", "assets/woods.png");
