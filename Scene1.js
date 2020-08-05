@@ -31,12 +31,15 @@ class Scene1 extends Phaser.Scene {
     this.reticle = this.physics.add.sprite(32.3799, 320.00, 'reticle', 'reticle.png');
 
     this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
+    this.zombie.health = 3;
 
     //this.pistol = this.physics.add.sprite(300, 300, 'pistol', 'pistol.png');
     this.pistol = this.physics.add.sprite(300, 300, 'player_sprite', 'pistol.png');
 
     this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
    
+    this.pistolSound = this.sound.add("pistol_shot");
+
 
     this.trees.setCollisionBetween(1, 4.5);
     this.physics.add.collider(this.player, this.trees);
@@ -74,7 +77,7 @@ class Scene1 extends Phaser.Scene {
 
 
         // Fires bullet from player on left click of mouse
-        this.input.on('pointerdown', function (pointer, time, lastFired) {
+        this.input.on('pointerdown', function (pointer, time, lastFired, gameObject) {
             if (this.player.active === false)
                 return;
     
@@ -84,8 +87,16 @@ class Scene1 extends Phaser.Scene {
             if (bullet && this.player.texture.key === 'armed_pistol_player')
             {
                 bullet.fire(this.player, this.reticle);
-                //this.physics.add.collider(enemy, bullet, enemyHitCallback);
+                this.player.anims.play('pistol-fire');
+                this.pistolSound.play();
+                this.physics.add.collider(this.zombie, bullet, this.enemyHitCallback);
             }
+        }, this);
+
+
+         //After shooting animation plays, resets back to original armed Pistol texture
+        this.player.on('animationcomplete', function(){
+            this.player.setTexture('armed_pistol_player', 1);
         }, this);
     
     
@@ -99,14 +110,16 @@ class Scene1 extends Phaser.Scene {
 
 
      //Camera
-     //this.cameras.main.zoom = 1.5;
+     //this.cameras.main.zoom = 1.3;
+
 
      // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
     this.cameraDolly = new Phaser.Geom.Point(this.player.x, this.player.y);
-    this.cameras.main.startFollow(this.cameraDolly);
+    this.cameras.main.startFollow(this.cameraDolly, true);
 
+   //this.cameras.main.roundPixels = true;
    
 
 
@@ -196,15 +209,6 @@ class Scene1 extends Phaser.Scene {
 
 
 
-   shootBullet(angle) {
-  
-    var bullet = new Bullet(this);
-
-    bullet.rotation = angle;
-
-    
-   }
-
 
 
 
@@ -213,6 +217,7 @@ class Scene1 extends Phaser.Scene {
        //pistol.setVisible(false);
        this.player.setTexture('armed_pistol_player').setScale(1.5);
        //this.player.setScale(2);
+       this.player.body.setSize(this.player.width, this.player.height, true);
    }
 
 
@@ -226,6 +231,24 @@ class Scene1 extends Phaser.Scene {
 
 
 
+  enemyHitCallback(enemyHit, bulletHit)
+  {
+      // Reduce health of enemy
+      if (bulletHit.active === true && enemyHit.active === true)
+      {
+          enemyHit.health = enemyHit.health - 1;
+          console.log("Enemy hp: ", enemyHit.health);
+  
+          // Kill enemy if health <= 0
+          if (enemyHit.health <= 0)
+          {
+             enemyHit.setActive(false).setVisible(false);
+          }
+  
+          // Destroy bullet
+          bulletHit.setActive(false).setVisible(false);
+      }
+  }
   
 
 

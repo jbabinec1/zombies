@@ -1,0 +1,25 @@
+{
+"frames": {
+	"gunFire1.png": {
+		"frame": {"x":0, "y":17, "w":27, "h":16},
+		"spriteSourceSize": {"x":0,"y":4,"w":33,"h":23},
+		"sourceSize": {"w":33,"h":23}
+	},
+	"gunFire2.png": {
+		"frame": {"x":0, "y":0, "w":33, "h":16},
+		"spriteSourceSize": {"x":0,"y":4,"w":33,"h":23},
+		"sourceSize": {"w":33,"h":23}
+	},
+	"gunFire3.png": {
+		"frame": {"x":0, "y":17, "w":27, "h":16},
+		"spriteSourceSize": {"x":0,"y":4,"w":33,"h":23},
+		"sourceSize": {"w":33,"h":23}
+	}
+
+},
+"meta": {
+	"image": "gunFire.png",
+	"size": {"w": 34, "h": 34},
+	"scale": "1"
+}
+}

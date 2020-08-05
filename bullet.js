@@ -14,13 +14,13 @@ class Bullet extends Phaser.GameObjects.Sprite {
         this.direction = 0;
         this.xSpeed = 0;
         this.ySpeed = 0;
-        this.setSize(12, 12, true);
-
+        this.player; 
+        //this.setSize(12, 12, true);
+        
    
    scene.physics.world.enableBody(this);
 
     }
-
         // Fires a bullet from the player to the reticle  /
         fire (shooter, target) 
          {
@@ -28,7 +28,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
             this.setPosition(shooter.x, shooter.y); // Initial position
             this.direction = Math.atan( (target.x-this.x) / (target.y-this.y));
     
-            // Calculate X and y velocity of bullet to moves it from shooter to target
+            // Calculate X and y velocity of bullet from shooter to target
             if (target.y >= this.y)
             {
                 this.xSpeed = this.speed*Math.sin(this.direction);
@@ -42,11 +42,10 @@ class Bullet extends Phaser.GameObjects.Sprite {
     
             this.rotation = shooter.rotation; // angle bullet with shooters rotation
             this.born = 0; // Time since new bullet spawned
+
+            //this.shooter.play("pistol-fire", true);
         }
         
-
-
-
 
 
     update(time, delta){   
@@ -62,6 +61,8 @@ class Bullet extends Phaser.GameObjects.Sprite {
 
 
     }
+
+
 
 
 
