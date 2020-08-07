@@ -7,6 +7,8 @@ class LoadScene extends Phaser.Scene {
 
         //this.load.image('player', 'assets/survivor.png', {frameWidth: 16, frameHeight: 16});
 
+        this.load.image('reticle', 'assets/crosshair.png', {frameWidth: 2, frameHeight: 2});
+
         this.load.image('player', 'assets/player2.png', {frameWidth: 16, frameHeight: 16});
 
         this.load.image('armed_pistol_player', 'assets/armed_player_pistol.png', {frameWidth: 16, frameHeight: 16});
@@ -15,10 +17,6 @@ class LoadScene extends Phaser.Scene {
 
         this.load.image('pistol', 'assets/pistol.png', {frameWidth: 3, frameHeight: 3});
 
-
-        this.load.image('reticle', 'assets/reticle.png', {frameWidth: 2, frameHeight: 2});
-
-        //this.load.spritesheet("bullet", "assets/bullet.png", { frameWidth: 3, frameHeight: 3  }); 
 
         this.load.image('bullet', 'assets/bullet.png', {frameWidth: 2, frameHeight: 2});
 
@@ -31,6 +29,8 @@ class LoadScene extends Phaser.Scene {
         this.load.spritesheet("pistol-fire", "assets/gunFire.png", { frameWidth: 16, frameHeight: 16  }); 
 
         //this.load.spritesheet("pistol-gunfire", "assets/pistolFire.png", { frameWidth: 16, frameHeight: 16  }); 
+
+        this.load.image("zombie_dead", "assets/zombie-dead.png", { frameWidth: 16, frameHeight: 16  }); 
 
 
 
@@ -69,7 +69,7 @@ class LoadScene extends Phaser.Scene {
 
   
 
-      let frameNames = [
+      let pistolFireFrames = [
         {key: 'pistol_gunfire', frame: 'gunFire2.png'},
         {key: 'pistol_gunfire', frame: 'gunFire3.png'},
       ]
@@ -77,7 +77,7 @@ class LoadScene extends Phaser.Scene {
        
       this.anims.create({
         key:"pistol-fire",
-        frames: frameNames,
+        frames: pistolFireFrames,
         frameRate: 10,
         repeat: 0,
         loop: false
