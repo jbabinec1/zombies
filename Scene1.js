@@ -29,7 +29,7 @@ class Scene1 extends Phaser.Scene {
 
     this.player = new Player(this, 32.3799, 291.419, 'player_sprite', 'player2.png').setScale(1.5);
 
-   //this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
+   this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
 
    //this.zombie.health = 3;
 
@@ -37,6 +37,8 @@ class Scene1 extends Phaser.Scene {
 
     
     this.zombies = this.physics.add.group();
+    this.zombie.health = 3;
+    //this.zombies.setAll('health', 3);
 
    // this.zombies.get(200, 150, 'zombie1')
 
@@ -68,36 +70,78 @@ class Scene1 extends Phaser.Scene {
     // When player walks over sword, overlap and trigger pickUpSword function
     this.physics.add.overlap(this.player, this.pistol, this.pickUpPistol, null, this);
 
-    this.physics.add.overlap(this.playerBullets, this.zombies, this.enemyHitCallback, null); 
-
-    this.zombie;
-    //this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
-  
+   // this.physics.add.overlap(this.playerBullets, this.zombies, this.enemyHitCallback, null); 
 
    
+    //this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
+
+  
+  
+      var zombie;  
+  
 
        //Spawn zombies  YARGHHH!!!
-       var maxZombies = 3;
+       var maxZombies = 6;
        for(var i = 0; i <= maxZombies; i++){
-         var zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png");
+         zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png");
          //this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
-         
          this.zombies.add(zombie);
+         
          zombie.setRandomPosition(0, 0, game.config.width, game.config.height);
-         //this.zombie.health = 3;
-
          zombie.health = 3;
+
+         //zombie.health = 3;
+         //this.zombies.health = 3;
          //this.zombies.health = 3;
         
-         zombie.setCollideWorldBounds(true);
+         this.zombie.setCollideWorldBounds(true);
         //powerUp.setBounce(1);
         
         //this.physics.moveToObject(this.zombie, this.player, 16);
+
+        this.physics.add.overlap(this.playerBullets, zombie, this.enemyHitCallback, null, this); 
+
+       function enemyHitCallback(enemyHit, bulletHit, zombie)
+        {
+            // Reduce health of enemy
+      
+            if (bulletHit.active === true && enemyHit.active === true)
+            {
+              
+                enemyHit.health = enemyHit.health - 1;
+                console.log("Enemy hp: ", enemyHit.health);
+        
+                // Kill enemy if health <= 0
+                if (enemyHit.health <= 0)
+                {
+                 
+                //  this.zombies.getChildren().forEachDead(function(zombie) {
+                  zombie.setTexture("zombie_dead");
+                  //zombie[zombie.length - 1].setTexture("zombie_dead");
+                  zombie.setSize(this.zombie.width, this.zombie.height, false);
+                  enemyHit.setVelocity(0);
+                  zombie.body.setVelocity(0);
+                  zombie.body.setVelocityX(0);
+                  zombie.body.setVelocityY(0);  
+                   //enemyHit.setActive(false).setVisible(false);     
+      
+                 // }, this); 
+      
+                } 
+        
+                // Destroy bullet
+                bulletHit.setActive(false).setVisible(false);
+               
+              // bulletHit.setActive(false).destroy();
+            }
+      
+         
+        } 
    
     
        } 
 
-       this.zombies.health = 3;
+       
 
 
      
@@ -106,10 +150,9 @@ class Scene1 extends Phaser.Scene {
 
 
     // Show Zombie death
-   //this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
+   this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
     
 
-    //this.player.body.setAllowGravity(false);
     this.reticle.body.setAllowGravity(false);
     this.reticle.displayWidth = 30;
     this.reticle.displayHeight = 27;
@@ -166,9 +209,9 @@ class Scene1 extends Phaser.Scene {
     
       
     
-    this.projectiles = this.add.group();
+   
 
-    //this.physics.add.overlap(this.projectiles, this.zombie, this.hitEnemy, null, this);
+    
     
  
 
@@ -234,18 +277,9 @@ class Scene1 extends Phaser.Scene {
      this.zombies.getChildren().forEach(function(zombie) {
 
     
-
         zombie.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, zombie.x,zombie.y); 
 
         var distance = Phaser.Math.Distance.Between(zombie.x, zombie.y, this.player.x, this.player.y);
-
-
-        /*
-        this.zombies.getChildren().forEach(function(zombie) {
-
-            zombie.health = 3;
-   
-       }, this); */
 
  
        //this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
@@ -268,14 +302,15 @@ class Scene1 extends Phaser.Scene {
           }
 
 
-          if (zombie.health <= 0)
+          
+          if (zombie.health <= 0 || null)
           {
            
            // this.zombies.getChildren().forEachDead(function(zombie) {
-            this.zombie.setTexture("zombie_dead");
+            zombie.setTexture("zombie_dead");
             //zombie[zombie.length - 1].setTexture("zombie_dead");
             zombie.setSize(zombie.width, zombie.height, false);
-            enemyHit.setVelocity(0);
+            //this.enemyHitCallback.setVelocity(0);
             zombie.body.setVelocity(0);
             zombie.body.setVelocityX(0);
             zombie.body.setVelocityY(0);  
@@ -283,7 +318,7 @@ class Scene1 extends Phaser.Scene {
       
            // }, this); 
       
-          }
+          } 
 
 
 
@@ -401,22 +436,22 @@ class Scene1 extends Phaser.Scene {
           console.log("Enemy hp: ", enemyHit.health);
   
           // Kill enemy if health <= 0
-       /*   if (enemyHit.health <= 0)
+          if (enemyHit.health <= 0)
           {
            
-            this.zombies.getChildren().forEachDead(function(zombie) {
-           // zombie.setTexture("zombie_dead");
+          //  this.zombies.getChildren().forEachDead(function(zombie) {
+            this.zombie.setTexture("zombie_dead");
             //zombie[zombie.length - 1].setTexture("zombie_dead");
-            this.zombie.setSize(zombie.width, zombie.height, false);
+            this.zombie.setSize(this.zombie.width, this.zombie.height, false);
             enemyHit.setVelocity(0);
-            zombie.body.setVelocity(0);
-            zombie.body.setVelocityX(0);
-            zombie.body.setVelocityY(0);  
+            this.zombie.body.setVelocity(0);
+            this.zombie.body.setVelocityX(0);
+            this.zombie.body.setVelocityY(0);  
              //enemyHit.setActive(false).setVisible(false);     
 
-            }, this); 
+           // }, this); 
 
-          } */
+          } 
   
           // Destroy bullet
           bulletHit.setActive(false).setVisible(false);
