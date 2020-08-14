@@ -30,19 +30,10 @@ class Scene1 extends Phaser.Scene {
     this.player = new Player(this, 32.3799, 291.419, 'player_sprite', 'player2.png').setScale(1.5);
 
    this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
-
-   //this.zombie.health = 3;
-
-   //this.zombies.health = 3;
+   this.zombie.visible = false;
 
     
     this.zombies = this.physics.add.group();
-    this.zombie.health = 3;
-    //this.zombies.setAll('health', 3);
-
-   // this.zombies.get(200, 150, 'zombie1')
-
-   
 
    
 
@@ -89,17 +80,12 @@ class Scene1 extends Phaser.Scene {
          
          zombie.setRandomPosition(0, 0, game.config.width, game.config.height);
          zombie.health = 3;
-
-         //zombie.health = 3;
-         //this.zombies.health = 3;
-         //this.zombies.health = 3;
         
-         this.zombie.setCollideWorldBounds(true);
-        //powerUp.setBounce(1);
+         zombie.setCollideWorldBounds(true);
         
         //this.physics.moveToObject(this.zombie, this.player, 16);
 
-        this.physics.add.overlap(this.playerBullets, zombie, this.enemyHitCallback, null, this); 
+        this.physics.add.overlap(this.playerBullets, zombie, enemyHitCallback, null, this); 
 
        function enemyHitCallback(enemyHit, bulletHit, zombie)
         {
@@ -115,24 +101,19 @@ class Scene1 extends Phaser.Scene {
                 if (enemyHit.health <= 0)
                 {
                  
-                //  this.zombies.getChildren().forEachDead(function(zombie) {
-                  zombie.setTexture("zombie_dead");
+                  this.zombie.setTexture("zombie_dead");
                   //zombie[zombie.length - 1].setTexture("zombie_dead");
-                  zombie.setSize(this.zombie.width, this.zombie.height, false);
+                  this.zombie.setSize(this.zombie.width, this.zombie.height, false);
                   enemyHit.setVelocity(0);
-                  zombie.body.setVelocity(0);
-                  zombie.body.setVelocityX(0);
-                  zombie.body.setVelocityY(0);  
-                   //enemyHit.setActive(false).setVisible(false);     
-      
-                 // }, this); 
+                  this.zombie.body.setVelocity(0);
+                  this.zombie.body.setVelocityX(0);
+                  this.zombie.body.setVelocityY(0);     
       
                 } 
         
                 // Destroy bullet
                 bulletHit.setActive(false).setVisible(false);
                
-              // bulletHit.setActive(false).destroy();
             }
       
          
@@ -150,7 +131,7 @@ class Scene1 extends Phaser.Scene {
 
 
     // Show Zombie death
-   this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
+  // this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
     
 
     this.reticle.body.setAllowGravity(false);
@@ -460,7 +441,7 @@ class Scene1 extends Phaser.Scene {
       }
 
    
-  } 
+  }  
 
 
 
