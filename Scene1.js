@@ -61,11 +61,6 @@ class Scene1 extends Phaser.Scene {
     // When player walks over sword, overlap and trigger pickUpSword function
     this.physics.add.overlap(this.player, this.pistol, this.pickUpPistol, null, this);
 
-   // this.physics.add.overlap(this.playerBullets, this.zombies, this.enemyHitCallback, null); 
-
-   
-    //this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
-
   
   
       var zombie;  
@@ -74,11 +69,10 @@ class Scene1 extends Phaser.Scene {
        //Spawn zombies  YARGHHH!!!
        var maxZombies = 6;
        for(var i = 0; i <= maxZombies; i++){
-         zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png");
-         //this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
+         zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png").setScale(1.5);
          this.zombies.add(zombie);
          
-         zombie.setRandomPosition(0, 0, game.config.width, game.config.height);
+         zombie.setRandomPosition(370, 300, game.config.width, game.config.height);
          zombie.health = 3;
         
          zombie.setCollideWorldBounds(true);
@@ -190,19 +184,13 @@ class Scene1 extends Phaser.Scene {
     
       
     
-   
-
-    
+  
     
  
 
     //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.cursorKeys = this.input.keyboard.addKeys('W,S,A,D');
 
-
-
-     //Camera
-     //this.cameras.main.zoom = 1.3;
 
 
      // set bounds so the camera won't go outside the game world
@@ -213,14 +201,6 @@ class Scene1 extends Phaser.Scene {
 
    //this.cameras.main.roundPixels = true;
    
-
-
-     
-   //this.physics.add.overlap(this.playerBullets, this.zombies, this.enemyHitCallback, null); 
-  
-   //this.physics.add.overlap(this.playerBullets, this.zombies, this.enemyHitCallback, null, this); 
-       
-   //this.physics.add.overlap(this.projectiles, this.zombies, this.hitEnemy, null, this); 
 
 
 
@@ -263,16 +243,13 @@ class Scene1 extends Phaser.Scene {
         var distance = Phaser.Math.Distance.Between(zombie.x, zombie.y, this.player.x, this.player.y);
 
  
-       //this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
-
-       //this.physics.add.overlap(this.playerBullets, this.zombies, this.enemyHitCallback, null); 
        
 
-        if(distance < 160 || this.player.body.position.x > 800) {      
+        if(distance < 700 || this.player.body.position.x > 800) {      
             this.physics.moveToObject(zombie, this.player, 16);
       
-           if (distance < 49)  // the lower the number the closer enemy is to player .. stop enemy sprite velocity
-            {
+           if (distance < 25)  // the lower the number the closer enemy is to player .. stop enemy sprite velocity
+            { //49
         
                 zombie.body.setVelocity(0);
                 zombie.body.setVelocityX(0);
@@ -295,6 +272,7 @@ class Scene1 extends Phaser.Scene {
             zombie.body.setVelocity(0);
             zombie.body.setVelocityX(0);
             zombie.body.setVelocityY(0);  
+            zombie.rotation = 0;
              //enemyHit.setActive(false).setVisible(false);     
       
            // }, this); 
@@ -330,57 +308,12 @@ class Scene1 extends Phaser.Scene {
 
    
 
-  
-    // Zombie follow player  OLD WAY .. SAVE 
-      
-   // var distance = Phaser.Math.Distance.Between(this.zombie.x, this.zombie.y, this.player.x, this.player.y);
-
-
-
-   
-/*
-
-    //WIP .. checking if players position is greater than 600 .. will trigger function to follow player
-    if(distance < 160 || this.player.body.position.x > 800) {      
-      this.physics.moveToObject(this.zombie, this.player, 16);
-
-     if (distance < 49)  // the lower the number the closer enemy is to player .. stop enemy sprite velocity
-      {
-  
-          this.zombie.body.setVelocity(0);
-          this.zombie.body.setVelocityX(0);
-          this.zombie.body.setVelocityY(0);   
-          //this.enemy.body.stop();
-        
-      }
-
-
-    }
-
-
-
-
-
-
-
-    if(this.zombie.texture.key === 'zombie_dead') {
-
-         this.zombie.body.setVelocity(0);
-          this.zombie.body.setVelocityX(0);
-          this.zombie.body.setVelocityY(0);  
-          this.rotation = 0;
-          
-
-      }
-
-
-*/
-
-
-
    
 
    } //End update area
+
+
+
 
 
 
