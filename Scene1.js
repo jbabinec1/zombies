@@ -66,9 +66,9 @@ class Scene1 extends Phaser.Scene {
       var zombie;  
   
 
-       //Spawn zombies  YARGHHH!!!
+       //Spawn zombies and add zombie offense logic  YARGHHH!!!
        var maxZombies = 6;
-       for(var i = 0; i <= maxZombies; i++){
+       for(var i = 0; i <= maxZombies; i++) {
          zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png").setScale(1.5);
          this.zombies.add(zombie);
          
@@ -80,6 +80,8 @@ class Scene1 extends Phaser.Scene {
         //this.physics.moveToObject(this.zombie, this.player, 16);
 
         this.physics.add.overlap(this.playerBullets, zombie, enemyHitCallback, null, this); 
+
+        this.physics.add.collider(this.player, zombie, playerHit, null, this);
 
        function enemyHitCallback(enemyHit, bulletHit, zombie)
         {
@@ -101,7 +103,8 @@ class Scene1 extends Phaser.Scene {
                   enemyHit.setVelocity(0);
                   this.zombie.body.setVelocity(0);
                   this.zombie.body.setVelocityX(0);
-                  this.zombie.body.setVelocityY(0);     
+                  this.zombie.body.setVelocityY(0); 
+                  this.zombie.body.enable = false;    
       
                 } 
         
@@ -112,11 +115,22 @@ class Scene1 extends Phaser.Scene {
       
          
         } 
-   
+    
+
+        function playerHit(enemyHit, bulletHit) 
+        {
+          if(zombie.texture.key === 'zombie_dead'); 
+          {
+          this.scene.pause();
+          } 
     
        } 
 
+
+
        
+
+    } // End of giant for loop
 
 
      
@@ -242,7 +256,7 @@ class Scene1 extends Phaser.Scene {
 
         var distance = Phaser.Math.Distance.Between(zombie.x, zombie.y, this.player.x, this.player.y);
 
- 
+        //this.physics.add.collider(this.player, zombie, playerHit, null, this);
        
 
         if(distance < 700 || this.player.body.position.x > 800) {      
@@ -288,11 +302,14 @@ class Scene1 extends Phaser.Scene {
           zombie.body.setVelocityX(0);
           zombie.body.setVelocityY(0);  
           this.rotation = 0;
+          zombie.body.enable = false;
           
 
       }
 
 
+
+   
 
 
 
@@ -307,6 +324,9 @@ class Scene1 extends Phaser.Scene {
 
 
    
+
+
+     // this.physics.add.collider(this.player, this.zombie, this.playerHit, null, this);
 
    
 
@@ -378,11 +398,24 @@ class Scene1 extends Phaser.Scene {
 
 
 
+  //Add function for when Zombie attacks player .. 
+
+  /* playerHit() {
+
+    if(zombie.texture.key === 'zombie1' && enemyHit.health >= 0) {
+    this.scene.pause();
+    } else if(this.zombie.texture.key === 'zombie_dead') {
+        this.scene.resume('Scene1');
+    }
+  } */
+
+
+
 
   
 
 
-
+    
 
 
   }   // End of class 
