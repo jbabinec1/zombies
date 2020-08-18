@@ -62,6 +62,7 @@ class Scene1 extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.pistol, this.pickUpPistol, null, this);
 
   
+    this.gameOver = false;
   
       var zombie;  
   
@@ -119,9 +120,44 @@ class Scene1 extends Phaser.Scene {
 
         function playerHit(enemyHit, bulletHit) 
         {
-          if(zombie.texture.key === 'zombie_dead'); 
+
+            //var style = { font: "bold 32px Arial", fill: "red", boundsAlignH: "center", /boundsAlignV: "middle" };
+
+            this.Text = this.add.text(410, 50, this.DisplayText, {fontSize: '20px', fill: 'red', backgroundColor: 'black', boundsAlignH: "center", boundsAlignV:"middle" }); 
+
+            //text = game.add.text(0, 0, "Wasted", style);
+    
+            // text.setTextBounds(0, 100, 800, 100);
+
+
+          if(zombie.texture.key === 'zombie1'); 
           {
-          this.scene.pause();
+          //this.scene.pause();
+          this.physics.pause();
+         
+          this.gameOver = true;
+          //this.player.disableBody(true, true);
+
+          this.player.body.enable = false;
+
+          this.DisplayText = 'Wasted. Press F to restart';
+          this.Text.setText(this.DisplayText);
+          this.Text.x = this.player.body.position.x;
+          this.Text.y = this.player.body.position.y - 25; 
+
+
+          /* if(Phaser.Input.Keyboard.JustDown(this.F) && this.gameOver == true) {
+            //Reset player position
+            //this.player.enableBody(true, 32.3799, 291.419, true, true);
+            this.scene.resume('Scene1');
+
+
+            //Set zombie random position
+            zombie.setRandomPosition(370, 300, game.config.width, game.config.height);
+
+            } */
+          
+
           } 
     
        } 
@@ -180,7 +216,7 @@ class Scene1 extends Phaser.Scene {
             var bullet = this.playerBullets.get().setActive(true).setVisible(true);
             
             
-            if (bullet && this.player.texture.key === 'armed_pistol_player')
+            if (bullet && this.player.texture.key === 'armed_pistol_player' && this.gameOver === false)
             {
                 bullet.fire(this.player, this.reticle);
                 this.player.anims.play('pistol-fire');
@@ -206,6 +242,8 @@ class Scene1 extends Phaser.Scene {
     this.cursorKeys = this.input.keyboard.addKeys('W,S,A,D');
 
 
+    // Add F key to allow player to restart game 
+    this.F = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
 
      // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -241,11 +279,6 @@ class Scene1 extends Phaser.Scene {
 
     
     
-
-
-   //Zombie rotates towards player    OLD WAY .. SAVE
-    //this.zombie.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, this.zombie.x,this.zombie.y); 
-
     
 
      ///Trying to add group think to these freakin zombies
@@ -316,10 +349,18 @@ class Scene1 extends Phaser.Scene {
       
 
 
-
-
-
       }, this);
+
+
+      // Press F to restart scene
+
+      if(Phaser.Input.Keyboard.JustDown(this.F) && this.gameOver == true ) {
+        //Reset player position
+        //this.player.enableBody(true, 32.3799, 291.419, true, true);
+        this.scene.resume('Scene1');
+        this.scene.restart();
+
+        } 
 
 
 
