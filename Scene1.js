@@ -226,6 +226,8 @@ class Scene1 extends Phaser.Scene {
         }, this);
 
 
+
+
          //After shooting animation plays, resets back to original armed Pistol texture
         this.player.on('animationcomplete', function(){
             this.player.setTexture('armed_pistol_player', 1);
@@ -244,6 +246,9 @@ class Scene1 extends Phaser.Scene {
 
     // Add F key to allow player to restart game 
     this.F = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.F);
+
+
+    this.G = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
 
      // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -352,6 +357,10 @@ class Scene1 extends Phaser.Scene {
       }, this);
 
 
+
+
+
+
       // Press F to restart scene
 
       if(Phaser.Input.Keyboard.JustDown(this.F) && this.gameOver == true ) {
@@ -361,6 +370,19 @@ class Scene1 extends Phaser.Scene {
         this.scene.restart();
 
         } 
+
+
+
+
+        if (Phaser.Input.Keyboard.JustDown(this.G) && this.player.texture.key === 'armed_pistol_player' ) {
+           
+            //this.player.setTexture('player_sprite', 'player2.png');
+            this.player.setTexture( 'player_sprite', 'player2.png');
+            this.resetPistolPos(this.pistol); 
+      
+          } 
+
+    
 
 
 
@@ -381,11 +403,10 @@ class Scene1 extends Phaser.Scene {
 
 
 
-   pickUpPistol(pistol, player) {
-       this.pistol.destroy();
-       //pistol.setVisible(false);
+   pickUpPistol(pistol) {
+       //this.pistol.destroy();
+       this.pistol.setVisible(false);
        this.player.setTexture('armed_pistol_player').setScale(1.5);
-       //this.player.setScale(2);
        this.player.body.setSize(this.player.width, this.player.height, true);
    }
 
@@ -403,18 +424,16 @@ class Scene1 extends Phaser.Scene {
   enemyHitCallback(enemyHit, bulletHit, zombie)
   {
       // Reduce health of enemy
-
       if (bulletHit.active === true && enemyHit.active === true)
       {
         
-          enemyHit.health = enemyHit.health - 1;
+         enemyHit.health = enemyHit.health - 1;
           console.log("Enemy hp: ", enemyHit.health);
   
           // Kill enemy if health <= 0
           if (enemyHit.health <= 0)
           {
            
-          //  this.zombies.getChildren().forEachDead(function(zombie) {
             this.zombie.setTexture("zombie_dead");
             //zombie[zombie.length - 1].setTexture("zombie_dead");
             this.zombie.setSize(this.zombie.width, this.zombie.height, false);
@@ -422,16 +441,11 @@ class Scene1 extends Phaser.Scene {
             this.zombie.body.setVelocity(0);
             this.zombie.body.setVelocityX(0);
             this.zombie.body.setVelocityY(0);  
-             //enemyHit.setActive(false).setVisible(false);     
-
-           // }, this); 
-
           } 
   
           // Destroy bullet
           bulletHit.setActive(false).setVisible(false);
          
-        // bulletHit.setActive(false).destroy();
       }
 
    
@@ -439,20 +453,14 @@ class Scene1 extends Phaser.Scene {
 
 
 
-  //Add function for when Zombie attacks player .. 
-
-  /* playerHit() {
-
-    if(zombie.texture.key === 'zombie1' && enemyHit.health >= 0) {
-    this.scene.pause();
-    } else if(this.zombie.texture.key === 'zombie_dead') {
-        this.scene.resume('Scene1');
-    }
-  } */
 
 
-
-
+  resetPistolPos(pistol) {
+    pistol.setVisible(true);
+    this.pistol.y = this.player.body.position.y;
+    this.pistol.x = this.player.body.position.x;
+    
+  }
   
 
 
