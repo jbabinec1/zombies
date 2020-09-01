@@ -24,10 +24,16 @@ class Scene1 extends Phaser.Scene {
       this.trees = this.map.createStaticLayer('trees', this.tileset, 0, 0); 
 
       
-
+      this.reticle = this.physics.add.sprite(32.3799, 320.00, 'reticle', 'reticle.png');
+      this.reticle.width = 11;
+      this.reticle.height = 10
+      this.reticle.depth = 100;
     
 
     this.player = new Player(this, 32.3799, 291.419, 'player_sprite', 'player2.png').setScale(1.5);
+
+    //Changing boundary physics box size
+    //this.player.body.setSize( 10, 10, 50, 25);
 
    this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
    this.zombie.visible = false;
@@ -37,10 +43,6 @@ class Scene1 extends Phaser.Scene {
 
    
 
-
-    this.reticle = this.physics.add.sprite(32.3799, 320.00, 'reticle', 'reticle.png');
-    this.reticle.width = 11;
-    this.reticle.height = 10
 
    
 
@@ -67,16 +69,18 @@ class Scene1 extends Phaser.Scene {
       var zombie;  
   
 
-       //Spawn zombies and add zombie offense logic  YARGHHH!!!
-       var maxZombies = 6;
+       //Spawn zombies and add zombie offense and zombie death logic. Also add death logic for player
+       var maxZombies = 9;
        for(var i = 0; i <= maxZombies; i++) {
          zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png").setScale(1.5);
+         zombie.body.setSize( 10, 15, 0, 0);
          this.zombies.add(zombie);
          
          zombie.setRandomPosition(370, 300, game.config.width, game.config.height);
          zombie.health = 3;
+         //zombie.body.enable = false; 
         
-         zombie.setCollideWorldBounds(true);
+         zombie.setCollideWorldBounds(false);
         
         //this.physics.moveToObject(this.zombie, this.player, 16);
 
@@ -84,6 +88,8 @@ class Scene1 extends Phaser.Scene {
 
         this.physics.add.collider(this.player, zombie, playerHit, null, this);
 
+
+        //logic when bullet hits zombie .. and when zombie dies .. 
        function enemyHitCallback(enemyHit, bulletHit, zombie)
         {
             // Reduce health of enemy
@@ -118,16 +124,12 @@ class Scene1 extends Phaser.Scene {
         } 
     
 
+        // If zombie collides with player .. end the game and show 'Game Over text' .. restart the scene 
         function playerHit(enemyHit, bulletHit) 
         {
 
-            //var style = { font: "bold 32px Arial", fill: "red", boundsAlignH: "center", /boundsAlignV: "middle" };
 
-            this.Text = this.add.text(410, 50, this.DisplayText, {fontSize: '20px', fill: 'red', backgroundColor: 'black', boundsAlignH: "center", boundsAlignV:"middle" }); 
-
-            //text = game.add.text(0, 0, "Wasted", style);
-    
-            // text.setTextBounds(0, 100, 800, 100);
+        this.Text = this.add.text(410, 50, this.DisplayText, {fontSize: '20px', fill: 'red', backgroundColor: 'black', boundsAlignH: "center", boundsAlignV:"middle" }); 
 
 
           if(zombie.texture.key === 'zombie1'); 
@@ -146,22 +148,10 @@ class Scene1 extends Phaser.Scene {
           this.Text.y = this.player.body.position.y - 25; 
 
 
-          /* if(Phaser.Input.Keyboard.JustDown(this.F) && this.gameOver == true) {
-            //Reset player position
-            //this.player.enableBody(true, 32.3799, 291.419, true, true);
-            this.scene.resume('Scene1');
-
-
-            //Set zombie random position
-            zombie.setRandomPosition(370, 300, game.config.width, game.config.height);
-
-            } */
-          
-
+      
           } 
     
        } 
-
 
 
        
@@ -172,17 +162,13 @@ class Scene1 extends Phaser.Scene {
      
 
 
-
-
-    // Show Zombie death
-  // this.physics.add.overlap(this.playerBullets, this.zombie, this.enemyHitCallback, null, this); 
     
 
     this.reticle.body.setAllowGravity(false);
     this.reticle.displayWidth = 30;
     this.reticle.displayHeight = 27;
 
-    //this.physics.world.setBoundsCollision(false);
+    
     this.player.setCollideWorldBounds(false); 
 
      // Locks pointer on mousedown
@@ -238,9 +224,6 @@ class Scene1 extends Phaser.Scene {
     
   
     
- 
-
-    //this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.cursorKeys = this.input.keyboard.addKeys('W,S,A,D');
 
 
@@ -256,7 +239,6 @@ class Scene1 extends Phaser.Scene {
     this.cameraDolly = new Phaser.Geom.Point(this.player.x, this.player.y);
     this.cameras.main.startFollow(this.cameraDolly, true);
 
-   //this.cameras.main.roundPixels = true;
    
 
 
@@ -300,7 +282,7 @@ class Scene1 extends Phaser.Scene {
         if(distance < 700 || this.player.body.position.x > 800) {      
             this.physics.moveToObject(zombie, this.player, 16);
       
-           if (distance < 25)  // the lower the number the closer enemy is to player .. stop enemy sprite velocity
+           if (distance < 25)  // the lower the number the closer enemy is to player .. stop enemy sprite velocity    //25
             { //49
         
                 zombie.body.setVelocity(0);
@@ -386,10 +368,7 @@ class Scene1 extends Phaser.Scene {
 
 
 
-   
 
-
-     // this.physics.add.collider(this.player, this.zombie, this.playerHit, null, this);
 
    
 
