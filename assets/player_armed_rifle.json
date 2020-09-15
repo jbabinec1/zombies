@@ -1,0 +1,25 @@
+{
+"frames": {
+	"armed_player_rifle.png": {
+		"frame": {"x":0, "y":0, "w":25, "h":14},
+		"spriteSourceSize": {"x":0,"y":3,"w":25,"h":21},
+		"sourceSize": {"w":25,"h":21}
+	},
+	"player2.png": {
+		"frame": {"x":0, "y":19, "w":15, "h":15},
+		"spriteSourceSize": {"x":9,"y":7,"w":32,"h":32},
+		"sourceSize": {"w":32,"h":32}
+	},
+	"rifle.png": {
+		"frame": {"x":0, "y":15, "w":23, "h":3},
+		"spriteSourceSize": {"x":3,"y":13,"w":27,"h":23},
+		"sourceSize": {"w":27,"h":23}
+	}
+
+},
+"meta": {
+	"image": "player_armed_rilfe.png",
+	"size": {"w": 26, "h": 35},
+	"scale": "1"
+}
+}

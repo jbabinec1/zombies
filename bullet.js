@@ -42,6 +42,7 @@ class Bullet extends Phaser.GameObjects.Sprite {
     
             this.rotation = shooter.rotation; // angle bullet with shooters rotation
             this.born = 0; // Time since new bullet spawned
+            //his.fireRate = 500;
 
             //this.shooter.play("pistol-fire", true);
         }
