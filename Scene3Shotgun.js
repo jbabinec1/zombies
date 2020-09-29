@@ -1,8 +1,8 @@
 
 
-class Scene2Unarmed extends Phaser.Scene {
+class Scene3Shotgun extends Phaser.Scene {
     constructor() {
-      super("secondSceneUnarmed");
+      super("thirdSceneShotgun");
       var bullet;
     }
 
@@ -11,21 +11,27 @@ class Scene2Unarmed extends Phaser.Scene {
 
         
 
-        
 
-        this.map = this.make.tilemap({
-            key: 'map',
-            tileWidth: 16,
-            tileHeight: 16
-          });
+      this.map = this.make.tilemap({
+        key: 'map',
+        tileWidth: 16,
+        tileHeight: 16
+      });
 
 
-      this.tileset = this.map.addTilesetImage('zombies', 'woodsMap'); 
-      
-      this.grass = this.map.createStaticLayer('grass', this.tileset, 0, 0);  
-      this.trees = this.map.createStaticLayer('trees', this.tileset, 0, 0); 
-      this.bushes = this.map.createStaticLayer('bushes', this.tileset, 0,0);
-      this.rocks = this.map.createStaticLayer('rocks', this.tileset, 0,0);
+  this.tileset = this.map.addTilesetImage('zombies', 'woodsMap');  
+  //this.tileset = this.map.addTilesetImage('zombies2', 'woodsMap2'); 
+  //this.tileset = this.map.addTilesetImage('more_trees', 'trees2'); 
+  
+  this.grass = this.map.createStaticLayer('grass', this.tileset, 0, 0);  
+  this.trees = this.map.createStaticLayer('trees', this.tileset, 0, 0); 
+  this.bushes = this.map.createStaticLayer('bushes', this.tileset, 0,0);
+  this.rocks = this.map.createStaticLayer('rocks', this.tileset, 0,0);
+  this.dirt = this.map.createStaticLayer('dirt', this.tileset, 0,0);
+  this.more_trees = this.map.createStaticLayer('more_trees', this.tileset, 0,0);
+
+     
+   
 
       
       this.reticle = this.physics.add.sprite(32.3799, 320.00, 'reticle', 'reticle.png');
@@ -36,15 +42,12 @@ class Scene2Unarmed extends Phaser.Scene {
 
     this.player = new Player(this, 90.3799, 291.419, 'player_sprite', 'player2.png').setScale(1.5);
 
-    //this.player.setTexture('armed_pistol_player', 1);
+    this.player.setTexture('armed_player_rifle', 1);
+
+    this.player.setDepth(100);
 
     //Changing boundary physics box size
     //this.player.body.setSize( 10, 10, 50, 25);
-
-    this.deadnpc = this.physics.add.sprite(600, 220, 'dead_npc', 'dead_npc.png').setScale(1.5);
-    this.tent = this.physics.add.sprite(600, 130, 'tent', 'tent.png').setScale(2);
-
-   
 
    this.zombie = this.physics.add.sprite(700, 300, 'zombie1', 'zombie.png').setScale(1.5);
    this.zombie.visible = false;
@@ -52,21 +55,26 @@ class Scene2Unarmed extends Phaser.Scene {
     
     this.zombies = this.physics.add.group();
 
+    //this.deadnpc = this.physics.add.sprite(600, 220, 'dead_npc', 'dead_npc.png').setScale(1.5);
+   // this.tent = this.physics.add.sprite(600, 130, 'tent', 'tent.png').setScale(2);
 
-    this.bush = this.physics.add.sprite(1507, 297, 'bush', 'bush_1.png');
-    this.bush.body.setSize(25, 190);
-    this.bush.body.immovable = true;
+    
+    this.pistol = this.physics.add.sprite(300, 300, 'player_sprite', 'pistol.png');
+
+    this.car = this.physics.add.sprite(1448, 220, 'car', 'car1.png');
+
+    this.car.body.immovable = true;
+
+    //this.car.setCollisionBetween(1, 45, true, 'car');
+    //this.physics.add.collider(this.player, this.car);
+    this.physics.add.collider(this.player, this.car, this.playerTouchCar, null, this);
 
    
-   
 
-   
-
-    // remove pistol ?? 
-    //this.pistol = this.physics.add.sprite(300, 300, 'player_sprite', 'pistol.png');
-
-    this.rifle = this.physics.add.sprite(500, 180, 'player_sprite_rifle', 'rifle.png');
+    this.rifle = this.physics.add.sprite(300, 300, 'player_sprite_rifle', 'rifle.png');
     this.rifle.setScale(2);
+
+    this.pistol.visible = false;
 
     this.playerBullets = this.physics.add.group({ classType: Bullet, runChildUpdate: true });
    
@@ -74,13 +82,16 @@ class Scene2Unarmed extends Phaser.Scene {
     this.rifleSound = this.sound.add("rifle_shot");
 
 
+    //this.trees.setCollisionBetween(1, 4.5, true, 'trees');
     this.trees.setCollisionBetween(1, 4.5);
     this.physics.add.collider(this.player, this.trees);
 
-    this.physics.add.collider(this.player, this.bushes);
-    //this.physics.add.collider(this.player, this.rocks);
+    this.more_trees.setCollisionBetween(1, 4.5);
+    this.physics.add.collider(this.player, this.more_trees);
 
-    this.rocks.setCollisionBetween(1, 1000, true, 'rocks');
+    
+
+    this.rocks.setCollisionBetween(1, 500, true, 'rocks');
     this.physics.add.collider(this.player, this.rocks);
 
 
@@ -89,18 +100,28 @@ class Scene2Unarmed extends Phaser.Scene {
     // When player walks over sword, overlap and trigger pickUpSword function
     this.physics.add.overlap(this.player, this.pistol, this.pickUpPistol, null, this);
 
+
     this.physics.add.overlap(this.player, this.rifle, this.pickUpRifle, null, this);
 
-    this.physics.add.collider(this.player, this.bush, this.scene3Start, null, this);
-
   
-    this.gameOver = false;
+    this.gameOver = false; // If you die flag
+    this.hasRifle = false;
+    this.hasPistol = false;
+    this.gameEnd = false; // If you make it to the car .. game ends
   
       var zombie;  
+
+      /*
+      this.DisplayText;
+      this.Text = this.add.text(210, 50, this.DisplayText, {fontSize: '20px', fill: '#000', backgroundColor: '#fff' }); 
+
+      this.DisplayText = 'WASD to move   G to drop weapon';
+      this.Text.setText(this.DisplayText);
+      this.Text.x = this.player.body.position.x; */
   
 
        //Spawn zombies and add zombie offense and zombie death logic. Also add death logic for player
-       var maxZombies = 15;
+       var maxZombies = 21;
        for(var i = 0; i <= maxZombies; i++) {
          zombie = this.physics.add.sprite(16,16, "zombie1", "zombie.png").setScale(1.5);
          zombie.body.setSize( 10, 15, 0, 0);
@@ -108,15 +129,14 @@ class Scene2Unarmed extends Phaser.Scene {
          
          zombie.setRandomPosition(370, 300, game.config.width, game.config.height);
          zombie.health = 3;
-         //zombie.body.enable = false; 
         
          zombie.setCollideWorldBounds(false);
-        
-        //this.physics.moveToObject(this.zombie, this.player, 16);
 
         this.physics.add.overlap(this.playerBullets, zombie, enemyHitCallback, null, this); 
 
         this.physics.add.collider(this.player, zombie, playerHit, null, this);
+
+
 
 
         //logic when bullet hits zombie .. and when zombie dies .. 
@@ -127,8 +147,18 @@ class Scene2Unarmed extends Phaser.Scene {
             if (bulletHit.active === true && enemyHit.active === true)
             {
               
-                enemyHit.health = enemyHit.health - 1;
-                console.log("Enemy hp: ", enemyHit.health);
+                //enemyHit.health = enemyHit.health - 1;
+                //console.log("Enemy hp: ", enemyHit.health);
+
+                if (this.player.texture.key === 'armed_pistol_player'){
+                    enemyHit.health = enemyHit.health - 1;
+                     console.log("Enemy hp: ", enemyHit.health);
+                   }
+           
+                     if (this.player.texture.key === 'armed_player_rifle'){
+                       enemyHit.health = enemyHit.health - 2;
+                       //console.log("Enemy hp: ", enemyHit.health);
+                     }
         
                 // Kill enemy if health <= 0
                 if (enemyHit.health <= 0)
@@ -211,75 +241,82 @@ class Scene2Unarmed extends Phaser.Scene {
             {
                 this.reticle.x += pointer.movementX;
                 this.reticle.y += pointer.movementY;
+                
             }
         }, this);
 
 
   
 
+        //|| this.player.texture.key === 'armed_player_rifle'
 
 
         // Fires bullet from player on left click of mouse
+       this.input.on('pointerdown', function (pointer, time, lastFired, gameObject, zombie) {
+            if (this.player.active === false)
+                return;
+    
+            // Get bullet from bullets group
+            var bullet = this.playerBullets.get().setActive(true).setVisible(true);
+              
+            if (bullet && this.player.texture.key === 'armed_pistol_player' || this.player.texture.key === 'armed_player_rifle'  && this.gameOver === false)
+            {
+                bullet.fire(this.player, this.reticle);
+                if(this.player.texture.key === 'armed_pistol_player'){
+                this.player.anims.play('pistol-fire');
+                //if(this.player.texture.key === 'armed_pistol_player') {
+                //this.pistolSound.play();
+                
+                }
+                
+                this.physics.add.collider(this.zombies, bullet, this.enemyHitCallback);
+ 
+
+                //}
+            }
+        }, this);
+
+
+
+
 
         this.input.on('pointerdown', function (pointer, time, lastFired, gameObject, zombie) {
-          if (this.player.active === false)
-              return;
-  
-          // Get bullet from bullets group
-          var bullet = this.playerBullets.get().setActive(true).setVisible(true);
             
-          if (bullet && this.player.texture.key === 'armed_pistol_player' || this.player.texture.key === 'armed_player_rifle'  && this.gameOver === false)
-          {
-              bullet.fire(this.player, this.reticle);
-              if(this.player.texture.key === 'armed_pistol_player'){
-              this.player.anims.play('pistol-fire');
-              //if(this.player.texture.key === 'armed_pistol_player') {
-              this.pistolSound.play();
-              
-              }
-              
-              this.physics.add.collider(this.zombies, bullet, this.enemyHitCallback);
+            if (this.player.active === false)
+                return;
+
+                if (this.player.texture.key === 'armed_player_rifle'  && this.gameOver === false)
+                {
+
+                    this.rifleSound.play(); 
+                    this.player.anims.play('rifle-gunfire');
+
+                }
+
+            }, this);
+
+        
 
 
-              //}
-          }
-      }, this);
-
-
-
-
-
-      this.input.on('pointerdown', function (pointer, time, lastFired, gameObject, zombie) {
-          
-          if (this.player.active === false)
-              return;
-
-              if (this.player.texture.key === 'armed_player_rifle'  && this.gameOver === false)
-              {
-
-                  this.rifleSound.play(); 
-                  this.player.anims.play('rifle-gunfire');
-
-              }
-
-          }, this);
-
-
-           //Make sure sprite leaves the animation state
+            //Make sure sprite leaves the animation state
            this.player.on('animationcomplete', this.pistolFinish, this);
            this.player.on('animationcomplete', this.rifleFinish, this);
 
 
 
 
-
-         //After shooting animation plays, resets back to original armed Pistol texture 
-         /*
-        this.player.on('animationcomplete', function(){
+         //After shooting animation plays, resets back to original armed Pistol texture
+    /*     this.player.on('animationcomplete', function(animation){
+            if(animation.key === 'pistol-fire') {
             this.player.setTexture('armed_pistol_player', 1);
+            }
         }, this);  */
+
+
+      
     
     
+       
       
     
   
@@ -292,6 +329,9 @@ class Scene2Unarmed extends Phaser.Scene {
 
 
     this.G = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
+
+    this.R = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+
 
      // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -328,8 +368,8 @@ class Scene2Unarmed extends Phaser.Scene {
     
     
 
-     ///Trying to add group think to these freakin zombies
-     this.zombies.getChildren().forEach(function(zombie) {
+       ///Trying to add group think to these freakin zombies
+       this.zombies.getChildren().forEach(function(zombie) {
 
     
         zombie.rotation = Phaser.Math.Angle.Between(this.player.x, this.player.y, zombie.x,zombie.y); 
@@ -340,7 +380,7 @@ class Scene2Unarmed extends Phaser.Scene {
        
 
         if(distance < 700 || this.player.body.position.x > 800) {      
-            this.physics.moveToObject(zombie, this.player, 30);
+            this.physics.moveToObject(zombie, this.player, 25);
       
            if (distance < 25)  // the lower the number the closer enemy is to player .. stop enemy sprite velocity    //25
             { //49
@@ -413,26 +453,24 @@ class Scene2Unarmed extends Phaser.Scene {
         } 
 
 
+        if(Phaser.Input.Keyboard.JustDown(this.R) && this.gameEnd == true ) {
+          //Reset player position
+          this.scene.start('playGame');
+          //his.scene.restart();
+  
+          } 
 
 
-      /*  if (Phaser.Input.Keyboard.JustDown(this.G) && this.player.texture.key === 'armed_pistol_player' ) {
-           
-            //this.player.setTexture('player_sprite', 'player2.png');
-            this.player.setTexture( 'player_sprite', 'player2.png');
-            this.resetPistolPos(this.pistol); 
-      
-          }  */
+     //this.player.texture.key == 'armed_pistol_player'
 
-    
+     //this.player.texture.key !== 'player_sprite'
 
+        if(Phaser.Input.Keyboard.JustDown(this.G) && this.player.texture.key !== 'player_sprite' ) {
 
-
-          if(Phaser.Input.Keyboard.JustDown(this.G) && this.player.texture.key !== 'player_sprite' ) {
-
-           /* if(this.player.texture.key == 'armed_pistol_player') {     
+            if(this.player.texture.key == 'armed_pistol_player') {     
             this.player.setTexture('player_sprite', 'player2.png');
             this.resetPistolPos(this.pistol);
-            } */
+            } 
             if(this.player.texture.key == 'armed_player_rifle') {
             this.player.setTexture('player_sprite', 'player2.png');
             this.resetRiflePos(this.rifle);  
@@ -440,6 +478,14 @@ class Scene2Unarmed extends Phaser.Scene {
             
           } 
 
+         
+
+
+          
+
+    
+
+         
 
 
    
@@ -459,23 +505,16 @@ class Scene2Unarmed extends Phaser.Scene {
        this.pistol.setVisible(false);
        this.player.setTexture('armed_pistol_player').setScale(1.5);
        this.player.body.setSize(this.player.width, this.player.height, true);
+       this.hasPistol = true;
    }
 
 
    pickUpRifle(rifle) {
-    //this.pistol.destroy();
+    this.pistol.destroy();
     this.rifle.setVisible(false);
     this.player.setTexture('armed_player_rifle').setScale(1.5);
     this.player.body.setSize(this.player.width, this.player.height, true);
     this.hasRifle = true;
-}
-
-
-resetRiflePos(rifle, player) {
-  rifle.setVisible(true);
-  this.rifle.y = this.player.body.position.y;
-  this.rifle.x = this.player.body.position.x;  
-
 }
 
 
@@ -494,9 +533,15 @@ resetRiflePos(rifle, player) {
       // Reduce health of enemy
       if (bulletHit.active === true && enemyHit.active === true)
       {
-        
+        if (this.player.texture.key === 'armed_pistol_player'){
          enemyHit.health = enemyHit.health - 1;
           console.log("Enemy hp: ", enemyHit.health);
+        }
+
+          if (this.player.texture.key === 'armed_player_rifle'){
+            enemyHit.health = enemyHit.health - 3;
+            //console.log("Enemy hp: ", enemyHit.health);
+          }
   
           // Kill enemy if health <= 0
           if (enemyHit.health <= 0)
@@ -520,42 +565,37 @@ resetRiflePos(rifle, player) {
   }  
 
 
-  scene3Start(player, bush) {
-    player.setVelocityX(0);
-    bush.setVelocityX(0);
-
-    //this.player.texture.key === 'armed_pistol_player'
-   if (this.player.texture.key === 'armed_pistol_player') {
-    this.scene.start("thirdScene");
-   } 
-
-   if (this.player.texture.key === 'armed_player_rifle') {
-    this.scene.start("thirdSceneShotgun");
-   } 
-
-   if (this.player.texture.key === 'player_sprite') {
-     this.scene.start('thirdSceneUnarmed');
-   }
-
-  /* if (this.player.texture.key === 'player_armed_rifle') {
-    this.scene.start('thirdSceneShotgun');
-  }*/
-
-  }
 
 
 
-
-
-  resetPistolPos(pistol) {
+  resetPistolPos(pistol, player) {
+   
     pistol.setVisible(true);
     this.pistol.y = this.player.body.position.y;
-    this.pistol.x = this.player.body.position.x;
-    
+    this.pistol.x = this.player.body.position.x;    
   }
 
 
-  pistolFinish(animation, player) {
+  resetRiflePos(rifle, player) {
+    rifle.setVisible(true);
+    this.rifle.y = this.player.body.position.y;
+    this.rifle.x = this.player.body.position.x;  
+
+  }
+
+
+/* stopPistolAnimation(player){
+  player.on('animationcomplete', function(){
+    this.player.setTexture('armed_pistol_player', 1);
+}, this);
+
+} */
+
+
+
+
+
+pistolFinish(animation, player) {
     if(animation.key === 'pistol-fire') {
     this.player.setTexture('armed_pistol_player', 1);
     }
@@ -567,10 +607,33 @@ resetRiflePos(rifle, player) {
     this.player.setTexture('armed_player_rifle', 1);
     }
  }
+
+
+
+
+ playerTouchCar(enemyHit, bulletHit) 
+ {
+
+ this.Text = this.add.text(410, 50, this.DisplayText, {fontSize: '20px', fill: 'red', backgroundColor: 'black', boundsAlignH: "center", boundsAlignV:"middle" }); 
+
+   this.physics.pause();
+   this.gameEnd = true;
+   this.player.body.enable = false;
+   this.DisplayText = 'We made it out.. for now. Press R to restart game';
+   this.Text.setText(this.DisplayText);
+   this.Text.x = this.player.body.position.x - 390;
+   this.Text.y = this.player.body.position.y - 25; 
+
+   this.cameras.main.fadeOut(12000, 60, 60, 60)
+
+   this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (cam, effect) => {
+		this.scene.start('playGame');
+	})
+
   
-
-
+} 
     
+
 
 
   }   // End of class 

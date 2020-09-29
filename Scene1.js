@@ -86,8 +86,21 @@ class Scene1 extends Phaser.Scene {
 
   
     this.gameOver = false;
+    this.gamePaused = true;
   
       var zombie;  
+
+
+      this.DisplayText;
+      this.Text = this.add.text(210, 50, this.DisplayText, {fontSize: '14px', fill: '#000', backgroundColor: '#fff' }).setVisible(true); 
+
+          this.DisplayText = 'Ah darn.. Zombies again.. Press H to continue';
+          this.Text.setText(this.DisplayText);
+          this.Text.x = this.player.body.position.x;
+          this.Text.y = this.player.body.position.y - 25; 
+
+          
+          
   
 
        //Spawn zombies and add zombie offense and zombie death logic. Also add death logic for player
@@ -189,8 +202,9 @@ class Scene1 extends Phaser.Scene {
     this.player.setCollideWorldBounds(false); 
 
      // Locks pointer on mousedown
-     game.canvas.addEventListener('mousedown', function () {
+     game.canvas.addEventListener('mousedown', function (scene) {
         game.input.mouse.requestPointerLock();
+        
     });
 
 
@@ -202,6 +216,7 @@ class Scene1 extends Phaser.Scene {
             {
                 this.reticle.x += pointer.movementX;
                 this.reticle.y += pointer.movementY;
+                this.Text.destroy();
             }
         }, this);
 
@@ -250,6 +265,8 @@ class Scene1 extends Phaser.Scene {
 
     this.G = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G);
 
+    this.H = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+
      // set bounds so the camera won't go outside the game world
     this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
@@ -295,6 +312,9 @@ class Scene1 extends Phaser.Scene {
         var distance = Phaser.Math.Distance.Between(zombie.x, zombie.y, this.player.x, this.player.y);
 
         //this.physics.add.collider(this.player, zombie, playerHit, null, this);
+
+        
+
        
 
         if(distance < 700 || this.player.body.position.x > 800) {      
@@ -361,12 +381,31 @@ class Scene1 extends Phaser.Scene {
 
       // Press F to restart scene
 
-      if(Phaser.Input.Keyboard.JustDown(this.F) && this.gameOver == true ) {
+      if(Phaser.Input.Keyboard.JustDown(this.F) && this.gameOver == true) {
         //Reset player position
-        this.scene.resume('Scene1');
+        //this.scene.resume('Scene1');
+        this.scene.resume();
         this.scene.restart();
+        this.Text.setVisible(false);
+        this.Text.destroy();
+        this.gamePaused = false;
+
 
         } 
+
+
+
+
+
+        if(Phaser.Input.Keyboard.JustDown(this.H)) {
+          //Reset player position
+          this.scene.resume();
+          //this.scene.restart();
+          //this.gamePaused = false;
+  
+          this.Text.setVisible(false);
+          this.Text.destroy();
+          } 
 
 
 

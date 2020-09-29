@@ -9,6 +9,8 @@ class LoadScene extends Phaser.Scene {
 
         this.load.image('reticle', 'assets/crosshair.png', {frameWidth: 2, frameHeight: 2});
 
+        this.load.image('car', 'assets/car1.png', {frameWidth: 20, frameHeight: 20});
+
         this.load.image('player', 'assets/player2.png', {frameWidth: 16, frameHeight: 16});
 
         this.load.image('dead_npc', 'assets/dead_npc.png', {frameWidth: 16, frameHeight: 16});
@@ -29,8 +31,14 @@ class LoadScene extends Phaser.Scene {
 
      
         this.load.image("woodsMap", "assets/woods.png");
+        //this.load.image("woodsMap2", "assets/environment2.png");
+        this.load.image("woodsMap2", "assets/woods2.png");
+
+        this.load.image("trees2", "assets/Forest Pack/Trees/tree_1.png");
       
         this.load.tilemapTiledJSON('map', 'assets/zombie_woods.json');
+        //this.load.tilemapTiledJSON('map2', 'assets/zombie_woods2.json')
+        this.load.tilemapTiledJSON('map2', 'assets/woods2.json')
 
 
         this.load.spritesheet("pistol-fire", "assets/gunFire.png", { frameWidth: 16, frameHeight: 16  }); 

@@ -13,12 +13,12 @@ var gameSettings = {
       type: Phaser.AUTO,
       parent: 'game-container', 
       //backgroundColor: white,
-      scene: [LoadScene, Scene1, Scene2, Scene2Unarmed],
+      scene: [LoadScene, Scene1, Scene2, Scene2Unarmed, Scene3, Scene3Unarmed, Scene3Shotgun],
       pixelArt: true,
       physics: {
         default: "arcade",
         arcade: {
-          //debug: true,
+          debug: false,
           gravity: { y: 0 }
         }
       }

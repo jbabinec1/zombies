@@ -21,11 +21,14 @@ class Scene2 extends Phaser.Scene {
 
 
       this.tileset = this.map.addTilesetImage('zombies', 'woodsMap'); 
+      //this.tileset = this.map.addTilesetImage('more_trees', 'trees2'); 
       
       this.grass = this.map.createStaticLayer('grass', this.tileset, 0, 0);  
       this.trees = this.map.createStaticLayer('trees', this.tileset, 0, 0); 
       this.bushes = this.map.createStaticLayer('bushes', this.tileset, 0,0);
       this.rocks = this.map.createStaticLayer('rocks', this.tileset, 0,0);
+
+      //this.tree2 = this.map.createStaticLayer('trees')
 
      
    
@@ -56,6 +59,10 @@ class Scene2 extends Phaser.Scene {
 
     
     this.pistol = this.physics.add.sprite(300, 300, 'player_sprite', 'pistol.png');
+
+    this.bush = this.physics.add.sprite(1507, 297, 'bush', 'bush_1.png');
+    this.bush.body.setSize(25, 190);
+    this.bush.body.immovable = true;
 
     this.rifle = this.physics.add.sprite(300, 300, 'player_sprite_rifle', 'rifle.png');
     this.rifle.setScale(2);
@@ -88,12 +95,22 @@ class Scene2 extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.rifle, this.pickUpRifle, null, this);
 
+    this.physics.add.collider(this.player, this.bush, this.scene3Start, null, this);
+
   
     this.gameOver = false;
     this.hasRifle = false;
     this.hasPistol = false;
   
       var zombie;  
+
+      /*
+      this.DisplayText;
+      this.Text = this.add.text(210, 50, this.DisplayText, {fontSize: '20px', fill: '#000', backgroundColor: '#fff' }); 
+
+      this.DisplayText = 'WASD to move   G to drop weapon';
+      this.Text.setText(this.DisplayText);
+      this.Text.x = this.player.body.position.x; */
   
 
        //Spawn zombies and add zombie offense and zombie death logic. Also add death logic for player
@@ -217,6 +234,7 @@ class Scene2 extends Phaser.Scene {
             {
                 this.reticle.x += pointer.movementX;
                 this.reticle.y += pointer.movementY;
+                
             }
         }, this);
 
@@ -240,7 +258,7 @@ class Scene2 extends Phaser.Scene {
                 if(this.player.texture.key === 'armed_pistol_player'){
                 this.player.anims.play('pistol-fire');
                 //if(this.player.texture.key === 'armed_pistol_player') {
-                //this.pistolSound.play();
+                this.pistolSound.play();
                 
                 }
                 
@@ -263,7 +281,7 @@ class Scene2 extends Phaser.Scene {
                 if (this.player.texture.key === 'armed_player_rifle'  && this.gameOver === false)
                 {
 
-                    //this.rifleSound.play(); 
+                    this.rifleSound.play(); 
                     this.player.anims.play('rifle-gunfire');
 
                 }
@@ -461,6 +479,24 @@ class Scene2 extends Phaser.Scene {
 
 
 
+   scene3Start(player, bush) {
+    player.setVelocityX(0);
+    bush.setVelocityX(0);
+
+    //this.player.texture.key === 'armed_pistol_player'
+   if (this.player.texture.key === 'armed_pistol_player') {
+    this.scene.start("thirdScene");
+   } 
+
+   if (this.player.texture.key === 'player_sprite') {
+     this.scene.start('thirdSceneUnarmed');
+   }
+
+   if (this.player.texture.key === 'armed_player_rifle') {
+    this.scene.start('thirdSceneShotgun');
+  }
+
+  }
 
 
 
